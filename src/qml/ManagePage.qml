@@ -7,8 +7,7 @@ Kirigami.ScrollablePage {
     id: root
     title: "Manage"
 
-    // TODO: bind to patcherEngine Python context properties
-    property var appliedPatches: []
+    property var appliedPatches: backend.appliedItems
     property var addedApps: []
     property var activityLog: []
 
@@ -58,7 +57,7 @@ Kirigami.ScrollablePage {
                             spacing: Theme.spaceSm
 
                             Text {
-                                text: modelData.patch_id || ""
+                                text: modelData.name || modelData.patch_id || ""
                                 color: Theme.textPrimary
                                 font.pixelSize: Theme.typeCardTitle
                                 font.weight: Font.Medium
@@ -87,7 +86,7 @@ Kirigami.ScrollablePage {
                                         font.pixelSize: Theme.typeSmall
                                     }
                                     onClicked: {
-                                        // TODO: call patcherEngine.reapply_patch(modelData.patch_id, [modelData.account_id])
+                                        backend.applyPatch(modelData.patch_id, [modelData.account_id])
                                     }
                                 }
 
@@ -108,7 +107,7 @@ Kirigami.ScrollablePage {
                                         font.pixelSize: Theme.typeSmall
                                     }
                                     onClicked: {
-                                        // TODO: call patcherEngine.revert_patch
+                                        backend.revertPatch(modelData.patch_id, [modelData.account_id])
                                     }
                                 }
                             }

@@ -12,8 +12,7 @@ Kirigami.ScrollablePage {
     property string steamGridDbKey: ""
     property bool autoCheck: true
     property int autoCheckIntervalMinutes: 5
-    // TODO: bind to patcherEngine.accounts
-    property var detectedAccounts: []
+    property var detectedAccounts: backend.allAccounts
     property string appVersion: "0.1.0"
 
     ColumnLayout {
@@ -215,8 +214,8 @@ Kirigami.ScrollablePage {
 
                                 Text {
                                     anchors.centerIn: parent
-                                    text: modelData.persona_name
-                                        ? modelData.persona_name.charAt(0).toUpperCase()
+                                    text: modelData.name
+                                        ? modelData.name.charAt(0).toUpperCase()
                                         : "?"
                                     color: Theme.accent
                                     font.pixelSize: Theme.typeSmall
@@ -228,12 +227,12 @@ Kirigami.ScrollablePage {
                                 spacing: 2
 
                                 Text {
-                                    text: modelData.persona_name || ""
+                                    text: modelData.name || ""
                                     color: Theme.textPrimary
                                     font.pixelSize: Theme.typeBody
                                 }
                                 Text {
-                                    text: modelData.steam_id64 || ""
+                                    text: modelData.steamId || ""
                                     color: Theme.textMuted
                                     font.pixelSize: Theme.typeSmall
                                     font.family: "monospace"

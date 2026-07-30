@@ -7,8 +7,7 @@ Kirigami.ScrollablePage {
     id: root
     title: "Games"
 
-    // TODO: bind to Python model from patcherEngine
-    property var games: []
+    property var games: backend.gameItems
 
     ColumnLayout {
         width: parent.width

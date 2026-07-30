@@ -7,8 +7,7 @@ Kirigami.ScrollablePage {
     id: root
     title: "Apps"
 
-    // TODO: bind to Python model from patcherEngine
-    property var apps: []
+    property var apps: backend.appItems
 
     ColumnLayout {
         width: parent.width
@@ -119,9 +118,8 @@ Kirigami.ScrollablePage {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            // TODO: push AppDetailPage
                             pageStack.push(Qt.resolvedUrl("AppDetailPage.qml"),
-                                           { app: modelData })
+                                           { appItem: modelData })
                         }
                     }
                 }

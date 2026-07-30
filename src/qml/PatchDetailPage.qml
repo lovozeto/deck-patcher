@@ -9,10 +9,26 @@ Kirigami.ScrollablePage {
 
     // Passed in by caller
     property var patch: ({})
-    property var accounts: []
+    property var accounts: backend.allAccounts
     property string readmeContent: "Loading…"
 
-    // TODO: bind all data to patcherEngine context properties
+    Component.onCompleted: {
+        if (root.patch.id) {
+            root.readmeContent = backend.fetchReadme(root.patch.id)
+        }
+    }
+
+    AccountSelector {
+        id: accountSelector
+        accounts: backend.allAccounts
+        activeAccountId: backend.activeAccountId
+        onConfirmed: function(accountIds) {
+            var result = backend.applyPatch(root.patch.id, accountIds)
+            if (!result.success) {
+                console.warn("Apply failed:", result.error)
+            }
+        }
+    }
 
     ColumnLayout {
         width: parent.width
@@ -158,8 +174,8 @@ Kirigami.ScrollablePage {
 
                                 Text {
                                     anchors.centerIn: parent
-                                    text: modelData.persona_name
-                                        ? modelData.persona_name.charAt(0).toUpperCase()
+                                    text: modelData.name
+                                        ? modelData.name.charAt(0).toUpperCase()
                                         : "?"
                                     color: Theme.accent
                                     font.pixelSize: Theme.typeSmall
@@ -168,7 +184,7 @@ Kirigami.ScrollablePage {
 
                             Text {
                                 anchors.verticalCenter: parent.verticalCenter
-                                text: modelData.persona_name || ""
+                                text: modelData.name || ""
                                 color: Theme.textPrimary
                                 font.pixelSize: Theme.typeBody
                             }
@@ -203,9 +219,7 @@ Kirigami.ScrollablePage {
                         font.pixelSize: Theme.typeBody
                         font.weight: Font.Medium
                     }
-                    onClicked: {
-                        // TODO: show AccountSelector, then call patcherEngine.apply_patch
-                    }
+                    onClicked: accountSelector.open()
                 }
             }
         }
@@ -356,7 +370,7 @@ Kirigami.ScrollablePage {
 
             Button {
                 text: "Revert patch"
-                visible: true // TODO: bind to isApplied
+                visible: root.patch.status === "applied"
                 height: Theme.minTapTarget
                 width: (parent.width - Theme.spaceMd) / 2
 
@@ -374,7 +388,11 @@ Kirigami.ScrollablePage {
                     font.pixelSize: Theme.typeBody
                 }
                 onClicked: {
-                    // TODO: call patcherEngine.revert_patch
+                    var accountIds = root.accounts.map(function(a) { return a.userdataId })
+                    var result = backend.revertPatch(root.patch.id, accountIds)
+                    if (!result.success) {
+                        console.warn("Revert failed:", result.error)
+                    }
                 }
             }
 

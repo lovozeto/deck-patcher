@@ -7,10 +7,20 @@ Kirigami.Dialog {
     id: root
     title: "Add to Steam library"
 
-    // TODO: bind to patcherEngine.accounts
     property var accounts: []
     property string activeAccountId: ""
-    property var selectedAccountIds: []
+    property var checkedIds: ({})
+
+    function initCheckedIds() {
+        var ids = {}
+        for (var i = 0; i < accounts.length; i++) {
+            ids[accounts[i].userdataId] = true
+        }
+        checkedIds = ids
+    }
+
+    Component.onCompleted: initCheckedIds()
+    onAccountsChanged: initCheckedIds()
 
     signal confirmed(var accountIds)
 
@@ -41,8 +51,6 @@ Kirigami.Dialog {
                 border.color: Theme.borderDefault
                 border.width: 1
 
-                property bool isChecked: true  // both checked by default
-
                 Row {
                     anchors {
                         fill: parent
@@ -52,13 +60,11 @@ Kirigami.Dialog {
 
                     CheckBox {
                         anchors.verticalCenter: parent.verticalCenter
-                        checked: parent.parent.isChecked
+                        checked: root.checkedIds[modelData.userdataId] !== false
                         onCheckedChanged: {
-                            parent.parent.isChecked = checked
-                            // Update selectedAccountIds
-                            var ids = []
-                            // TODO: collect checked IDs from all delegates
-                            root.selectedAccountIds = ids
+                            var ids = Object.assign({}, root.checkedIds)
+                            ids[modelData.userdataId] = checked
+                            root.checkedIds = ids
                         }
                     }
 
@@ -68,16 +74,16 @@ Kirigami.Dialog {
                         height: 32
                         anchors.verticalCenter: parent.verticalCenter
                         radius: 16
-                        color: modelData.steam_id64 === root.activeAccountId
+                        color: modelData.steamId === root.activeAccountId
                             ? Theme.accentBg
                             : Theme.bgElevated
 
                         Text {
                             anchors.centerIn: parent
-                            text: modelData.persona_name
-                                ? modelData.persona_name.charAt(0).toUpperCase()
+                            text: modelData.name
+                                ? modelData.name.charAt(0).toUpperCase()
                                 : "?"
-                            color: modelData.steam_id64 === root.activeAccountId
+                            color: modelData.steamId === root.activeAccountId
                                 ? Theme.accent
                                 : Theme.textSecondary
                             font.pixelSize: Theme.typeBody
@@ -89,12 +95,12 @@ Kirigami.Dialog {
                         spacing: 2
 
                         Text {
-                            text: modelData.persona_name || ""
+                            text: modelData.name || ""
                             color: Theme.textPrimary
                             font.pixelSize: Theme.typeBody
                         }
                         Text {
-                            visible: modelData.steam_id64 === root.activeAccountId
+                            visible: modelData.steamId === root.activeAccountId
                             text: "Active account"
                             color: Theme.accent
                             font.pixelSize: Theme.typeSmall
@@ -174,8 +180,12 @@ Kirigami.Dialog {
                     font.weight: Font.Medium
                 }
                 onClicked: {
-                    // TODO: collect checked IDs before emitting
-                    root.confirmed(root.selectedAccountIds)
+                    var ids = []
+                    var map = root.checkedIds
+                    for (var key in map) {
+                        if (map[key]) ids.push(key)
+                    }
+                    root.confirmed(ids)
                     root.close()
                 }
             }
