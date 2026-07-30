@@ -10,11 +10,9 @@ Kirigami.ApplicationWindow {
     minimumWidth: 800
     minimumHeight: 500
 
-    // Active account footer text — populated from Python context property
-    // TODO: bind to patcherEngine.activeAccount once model is wired
-    property string activeAccountName: "Loading…"
-    property string activeAccountId: ""
-    property int attentionCount: 0
+    property string activeAccountName: backend.activeAccountName
+    property string activeAccountId: backend.activeAccountId
+    property int attentionCount: backend.outdatedCount
 
     globalDrawer: Kirigami.GlobalDrawer {
         title: "Deck Patcher"

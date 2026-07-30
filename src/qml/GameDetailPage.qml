@@ -7,12 +7,10 @@ Kirigami.ScrollablePage {
     id: root
     title: game.name || "Game"
 
-    // Passed in from GamesPage
+    // Passed in by caller (contains name, appid, patches[])
     property var game: ({})
-    // TODO: bind to Python patch list filtered by game.appid
-    property var patches: []
-    // TODO: bind to Python accounts list
-    property var accounts: []
+    property var patches: game.patches || []
+    property var accounts: backend.allAccounts
 
     ColumnLayout {
         width: parent.width
@@ -134,17 +132,15 @@ Kirigami.ScrollablePage {
 
                                 Text {
                                     anchors.centerIn: parent
-                                    text: accountData.persona_name.charAt(0).toUpperCase()
+                                    text: (modelData.name || "?").charAt(0).toUpperCase()
                                     color: Theme.accent
                                     font.pixelSize: Theme.typeSmall
                                 }
                             }
 
-                            property var accountData: modelData
-
                             Text {
                                 anchors.verticalCenter: parent.verticalCenter
-                                text: modelData.persona_name || ""
+                                text: modelData.name || ""
                                 color: Theme.textPrimary
                                 font.pixelSize: Theme.typeBody
                             }
@@ -191,7 +187,11 @@ Kirigami.ScrollablePage {
                         }
 
                         onClicked: {
-                            // TODO: call patcherEngine.apply_patch(modelData.id, accountIds)
+                            var accountIds = root.accounts.map(function(a) { return a.userdataId })
+                            var result = backend.applyPatch(modelData.id, accountIds)
+                            if (!result.success) {
+                                console.warn("Apply failed:", result.error)
+                            }
                         }
                     }
                 }

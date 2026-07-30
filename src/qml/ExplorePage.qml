@@ -7,16 +7,15 @@ Kirigami.ScrollablePage {
     id: root
     title: "Explore"
 
-    // TODO: replace with real models from Python context properties
     property var statsModel: [
-        { label: "Available", value: "—" },
-        { label: "Applied",   value: "—" },
-        { label: "Outdated",  value: "—" },
-        { label: "Users",     value: "—" }
+        { label: "Available", value: backend.totalCount   || "—" },
+        { label: "Applied",   value: backend.appliedCount || "—" },
+        { label: "Outdated",  value: backend.outdatedCount >= 0 ? backend.outdatedCount : "—" },
+        { label: "Users",     value: backend.usersCount   || "—" }
     ]
-    property var attentionPatches: []
-    property var gameItems: []
-    property var appItems: []
+    property var attentionPatches: backend.attentionItems
+    property var gameItems: backend.gameItems
+    property var appItems: backend.appItems
 
     ColumnLayout {
         width: parent.width
@@ -128,7 +127,7 @@ Kirigami.ScrollablePage {
             items: root.gameItems
             emptyText: "No game patches available yet"
             onItemClicked: function(item) {
-                // TODO: push GameDetailPage with item
+                pageStack.push(Qt.resolvedUrl("GameDetailPage.qml"), { game: item })
             }
         }
 
@@ -139,7 +138,7 @@ Kirigami.ScrollablePage {
             items: root.appItems
             emptyText: "No app setups available yet"
             onItemClicked: function(item) {
-                // TODO: push AppDetailPage with item
+                pageStack.push(Qt.resolvedUrl("AppDetailPage.qml"), { appItem: item })
             }
         }
     }

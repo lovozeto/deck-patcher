@@ -30,38 +30,27 @@ def _run_check() -> int:
 
 
 def _launch_gui() -> int:
-    """Launch the Kirigami QML application.
-
-    TODO: Switch from PyQt5 to PySide6/PyQt6 once the Flatpak base image
-    ships Qt 6 bindings. For now this stub uses QtWidgets as a placeholder
-    to keep the import chain valid.
-    """
+    """Launch the Kirigami QML application via PyQt6."""
     try:
-        # TODO: replace with PySide6 / PyQt6 once the base app supports Qt 6
-        from PyQt5.QtCore import QUrl  # type: ignore[import-not-found]
-        from PyQt5.QtQml import QQmlApplicationEngine  # type: ignore[import-not-found]
-        from PyQt5.QtWidgets import QApplication  # type: ignore[import-not-found]
+        from PyQt6.QtCore import QUrl  # type: ignore[import-not-found]
+        from PyQt6.QtQml import QQmlApplicationEngine  # type: ignore[import-not-found]
+        from PyQt6.QtWidgets import QApplication  # type: ignore[import-not-found]
     except ImportError as exc:
         print(f"ERROR: Qt bindings not available: {exc}", file=sys.stderr)
         return 1
 
-    from patch_registry import DEFAULT_REGISTRY_URL
-    from patcher_engine import PatcherEngine
-    from state_manager import get_applied_patches
+    from backend import DeckPatcherBackend
 
     app = QApplication(sys.argv)
     app.setApplicationName("DeckPatcher")
     app.setOrganizationName("lovozeto")
 
-    engine_obj = PatcherEngine(registry_url=DEFAULT_REGISTRY_URL)
+    backend = DeckPatcherBackend()
 
     qml_engine = QQmlApplicationEngine()
 
-    # Expose Python objects to QML
     ctx = qml_engine.rootContext()
-    ctx.setContextProperty("patcherEngine", engine_obj)
-    ctx.setContextProperty("appliedPatches", get_applied_patches())
-    ctx.setContextProperty("registryUrl", DEFAULT_REGISTRY_URL)
+    ctx.setContextProperty("backend", backend)
 
     qml_main = Path(__file__).parent / "qml" / "main.qml"
     qml_engine.load(QUrl.fromLocalFile(str(qml_main)))
@@ -70,7 +59,7 @@ def _launch_gui() -> int:
         print("ERROR: Failed to load main.qml", file=sys.stderr)
         return 1
 
-    return int(app.exec_())
+    return int(app.exec())
 
 
 def main() -> int:

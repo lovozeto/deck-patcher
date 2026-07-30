@@ -5,13 +5,11 @@ import org.kde.kirigami 2.20 as Kirigami
 
 Kirigami.ScrollablePage {
     id: root
-    title: app.name || "App"
+    title: appItem.name || "App"
 
-    // Passed in from AppsPage
-    property var app: ({})
-    // TODO: bind to Python accounts list
-    property var accounts: []
-    // TODO: bind to per-account setup status from patcherEngine
+    // Passed in by caller (contains name, appid, patches[])
+    property var appItem: ({})
+    property var accounts: backend.allAccounts
     property bool isFullySetUp: false
 
     ColumnLayout {
@@ -54,7 +52,7 @@ Kirigami.ScrollablePage {
                     width: parent.width - 80 - Theme.spaceLg
 
                     Text {
-                        text: root.app.name || ""
+                        text: root.appItem.name || ""
                         color: Theme.textPrimary
                         font.pixelSize: Theme.typePageTitle
                         font.weight: Font.Medium
@@ -105,7 +103,7 @@ Kirigami.ScrollablePage {
                     font.weight: Font.Medium
                 }
                 Text {
-                    text: root.app.description || "Set up this app on your Steam Deck."
+                    text: root.appItem.description || "Set up this appItem on your Steam Deck."
                     color: Theme.textPrimary
                     font.pixelSize: Theme.typeBody
                     wrapMode: Text.WordWrap
@@ -131,8 +129,14 @@ Kirigami.ScrollablePage {
                         font.weight: Font.Medium
                     }
                     onClicked: {
-                        // TODO: call patcherEngine.setup_app(app.id, accountIds)
-                        // then show AccountSelector dialog
+                        var accountIds = root.accounts.map(function(a) { return a.userdataId })
+                        var patchId = root.appItem.patches && root.appItem.patches.length > 0
+                            ? root.appItem.patches[0].id : ""
+                        if (patchId) {
+                            var result = backend.setupApp(patchId, accountIds)
+                            if (result.success) { root.isFullySetUp = true }
+                            else { console.warn("Setup failed:", result.error) }
+                        }
                     }
                 }
             }
@@ -172,8 +176,8 @@ Kirigami.ScrollablePage {
 
                         Text {
                             anchors.centerIn: parent
-                            text: modelData.persona_name
-                                ? modelData.persona_name.charAt(0).toUpperCase()
+                            text: modelData.name
+                                ? modelData.name.charAt(0).toUpperCase()
                                 : "?"
                             color: Theme.accent
                             font.pixelSize: Theme.typeBody
@@ -185,7 +189,7 @@ Kirigami.ScrollablePage {
                         spacing: 2
 
                         Text {
-                            text: modelData.persona_name || ""
+                            text: modelData.name || ""
                             color: Theme.textPrimary
                             font.pixelSize: Theme.typeBody
                         }
