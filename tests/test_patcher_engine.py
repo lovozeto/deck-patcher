@@ -71,6 +71,7 @@ def test_apply_patch_success(tmp_path: Path) -> None:
         patch("patcher_engine.record_apply"),
         patch("patcher_engine.check_markers", return_value=[]),
         patch("patcher_engine.should_show_reapply_alert", return_value=False),
+        patch("patcher_engine.get_steam_dir", return_value=tmp_path / "steam"),
     ):
         result = engine.apply_patch("test-patch", ["account-1"])
 
@@ -93,6 +94,7 @@ def test_apply_patch_failure_triggers_rollback(tmp_path: Path) -> None:
         patch("patcher_engine.create_backup", return_value=mock_manifest),
         patch("patcher_engine.run_on_host", return_value=mock_run_fail),
         patch("patcher_engine.restore_backup") as mock_restore,
+        patch("patcher_engine.get_steam_dir", return_value=tmp_path / "steam"),
     ):
         result = engine.apply_patch("test-patch", ["account-1"])
 
@@ -110,6 +112,7 @@ def test_revert_patch(tmp_path: Path) -> None:
     with (
         patch("patcher_engine.run_on_host", return_value=mock_run_ok),
         patch("patcher_engine.record_revert") as mock_record,
+        patch("patcher_engine.get_steam_dir", return_value=tmp_path / "steam"),
     ):
         result = engine.revert_patch("test-patch", ["account-1"])
 
@@ -134,6 +137,7 @@ def test_multi_account_apply(tmp_path: Path) -> None:
         patch("patcher_engine.record_apply"),
         patch("patcher_engine.check_markers", return_value=[]),
         patch("patcher_engine.should_show_reapply_alert", return_value=False),
+        patch("patcher_engine.get_steam_dir", return_value=tmp_path / "steam"),
     ):
         result = engine.apply_patch("test-patch", ["account-1", "account-2"])
 
