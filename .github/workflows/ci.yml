@@ -2,21 +2,30 @@ name: CI
 
 on:
   push:
+    branches: [main]
   pull_request:
 
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      - name: Install deps
-        run: pip install ruff mypy pytest vdf requests python-steamgriddb jsonschema
-      - name: Lint
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Lint (ruff)
         run: ruff check src/
-      - name: Type check
+
+      - name: Type-check (mypy)
         run: mypy --strict src/
-      - name: Test
-        run: pytest tests/ -v
+
+      - name: Test (pytest)
+        run: pytest tests/ -q

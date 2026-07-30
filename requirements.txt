@@ -1,0 +1,4 @@
+requests>=2.31.0
+python-steamgriddb>=1.0.4
+vdf>=3.4
+jsonschema>=4.17.0
