@@ -137,7 +137,7 @@ def restore_backup(manifest: RollbackManifest) -> list[str]:
                 shutil.copy2(backup, original)
 
             restored.append(entry.original_path)
-        except Exception:
+        except Exception:  # noqa: BLE001,S112
             # Best-effort restore; continue with remaining entries
             continue
 

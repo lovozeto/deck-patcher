@@ -1,7 +1,6 @@
 """Core patch application, revert, and setup logic."""
 from __future__ import annotations
 
-import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -11,7 +10,6 @@ from host_runner import run_on_host
 from marker_checker import check_markers
 from patch_registry import PatchMeta, download_patch, fetch_index
 from state_manager import (
-    get_applied_patches,
     record_apply,
     record_revert,
     should_show_reapply_alert,
@@ -105,7 +103,7 @@ class PatcherEngine:
 
         try:
             download_patch(self._registry_url, patch_id, self._patch_cache_dir)
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
             return ApplyResult(
                 patch_id=patch_id,
                 success=False,
@@ -122,7 +120,7 @@ class PatcherEngine:
             # Back up before any changes
             try:
                 manifest = create_backup(patch_id, meta.modifications)
-            except Exception as exc:
+            except Exception:  # noqa: BLE001
                 account_results[account_id] = False
                 continue
 
@@ -237,7 +235,7 @@ class PatcherEngine:
                 try:
                     appid = add_shortcut(account_id, shortcut_data)
                     steps.append(f"added_shortcut:{account_id}:{appid}")
-                except Exception as exc:
+                except Exception as exc:  # noqa: BLE001
                     return SetupResult(
                         success=False,
                         steps_completed=steps,

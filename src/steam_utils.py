@@ -97,7 +97,7 @@ def get_installed_games() -> list[InstalledGame]:
 
     library_folders: list[Path] = [steam_dir / "steamapps"]
     folders_section: dict[str, Any] = data.get("libraryfolders", {})
-    for _key, folder_data in folders_section.items():
+    for folder_data in folders_section.values():
         if isinstance(folder_data, dict):
             folder_path = Path(str(folder_data.get("path", ""))) / "steamapps"
             if folder_path.exists():
@@ -115,7 +115,7 @@ def get_installed_games() -> list[InstalledGame]:
                 install_dir = str(app_state.get("installdir", ""))
                 if appid and name:
                     games.append(InstalledGame(appid=appid, name=name, install_dir=install_dir))
-            except Exception:
+            except Exception:  # noqa: BLE001,S112
                 continue
 
     return games

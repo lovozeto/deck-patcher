@@ -26,4 +26,4 @@ def run_on_host(
     else:
         full_cmd = cmd
 
-    return subprocess.run(full_cmd, capture_output=True, text=True)
+    return subprocess.run(full_cmd, capture_output=True, text=True, check=False)

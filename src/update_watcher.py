@@ -35,7 +35,7 @@ Unit=deck-patcher-watch.service
 WantedBy=default.target
 """.format(home=Path("~").expanduser())
 
-SERVICE_UNIT = """\
+SERVICE_UNIT = f"""\
 [Unit]
 Description=Deck Patcher update check service
 After=network-online.target
@@ -43,9 +43,9 @@ After=network-online.target
 [Service]
 Type=oneshot
 ExecStart=flatpak run com.github.lovozeto.DeckPatcher --check-updates
-StandardOutput=append:{log}
-StandardError=append:{log}
-""".format(log=WATCH_LOG)
+StandardOutput=append:{WATCH_LOG}
+StandardError=append:{WATCH_LOG}
+"""
 
 
 def install_systemd_units() -> None:
@@ -74,8 +74,8 @@ def run_check(notify: bool = True) -> dict[str, str]:
     Returns a dict of patch_id → result string ("ok", "reapplied", "outdated", "error").
     """
     # Import here to avoid circular dependency at module load time
-    from patcher_engine import PatcherEngine
     from patch_registry import DEFAULT_REGISTRY_URL
+    from patcher_engine import PatcherEngine
 
     results: dict[str, str] = {}
     applied = get_applied_patches()
@@ -114,7 +114,7 @@ def run_check(notify: bool = True) -> dict[str, str]:
                         "Patch needs attention",
                         f'"{patch.patch_id}" markers failed. Open Deck Patcher to fix.',
                     )
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
             results[patch.patch_id] = f"error: {exc}"
 
     return results

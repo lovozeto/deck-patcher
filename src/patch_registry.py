@@ -42,7 +42,7 @@ class PatchMeta:
     app_setup: dict[str, Any] = field(default_factory=dict)
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "PatchMeta":
+    def from_dict(cls, data: dict[str, Any]) -> PatchMeta:
         return cls(
             id=str(data.get("id", "")),
             name=str(data.get("name", "")),

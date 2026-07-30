@@ -5,7 +5,6 @@ import shutil
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
-
 from urllib.parse import quote
 
 import requests
@@ -117,8 +116,7 @@ class SteamGridDBClient:
         response = self._session.get(url, timeout=30, stream=True)
         response.raise_for_status()
         with open(dest_path, "wb") as f:
-            for chunk in response.iter_content(chunk_size=8192):
-                f.write(chunk)
+            f.writelines(response.iter_content(chunk_size=8192))
 
     def save_artwork_to_steam(
         self,
