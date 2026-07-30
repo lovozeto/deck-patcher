@@ -1,0 +1,25 @@
+name: Deploy Flatpak repo
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build ostree repo
+        run: |
+          flatpak install --user --noninteractive org.kde.Platform//6.7 org.kde.Sdk//6.7 || true
+          # TODO: build ostree repo from release artifact
+          echo "Deploy step — fill in with ostree build after first release"
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./repo

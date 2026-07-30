@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Deck Patcher
+Comment=Community patch manager for Steam Deck
+Exec=deck-patcher
+Icon=com.github.lovozeto.DeckPatcher
+Type=Application
+Categories=Utility;Game;
+Keywords=Steam;Deck;Patch;Game;
+StartupWMClass=DeckPatcher

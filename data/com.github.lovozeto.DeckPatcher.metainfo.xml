@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.github.lovozeto.DeckPatcher</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+
+  <name>Deck Patcher</name>
+  <summary>Community patch manager for Steam Deck</summary>
+
+  <description>
+    <p>
+      Deck Patcher is a GUI application for the Steam Deck that lets you browse,
+      apply, and revert community-maintained patches for games and apps.
+    </p>
+    <p>
+      Patches can fix compatibility issues, enable features not available by
+      default, or set up non-Steam apps with proper Steam library entries,
+      artwork, and launch options.
+    </p>
+    <p>
+      All patches are reversible and backed up automatically before any changes
+      are made. The app monitors applied patches and alerts you when a system
+      update reverts them.
+    </p>
+  </description>
+
+  <url type="homepage">https://github.com/lovozeto/deck-patcher</url>
+  <url type="bugtracker">https://github.com/lovozeto/deck-patcher/issues</url>
+
+  <releases>
+    <release version="0.1.0" date="2026-07-29">
+      <description>
+        <p>Initial release — patch browser, apply/revert, multi-account support,
+           auto-reapply watcher, and SteamGridDB artwork picker.</p>
+      </description>
+    </release>
+  </releases>
+
+  <content_rating type="oars-1.1"/>
+</component>

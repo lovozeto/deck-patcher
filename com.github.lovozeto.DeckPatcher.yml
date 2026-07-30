@@ -1,0 +1,31 @@
+app-id: com.github.lovozeto.DeckPatcher
+runtime: org.kde.Platform
+runtime-version: '6.7'
+sdk: org.kde.Sdk
+base: com.riverbankcomputing.PyQt.BaseApp
+base-version: '6.7'
+command: deck-patcher
+finish-args:
+  - --share=network
+  - --filesystem=home
+  - --talk-name=org.freedesktop.Flatpak
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=dri
+modules:
+  - name: python-deps
+    buildsystem: simple
+    build-commands:
+      - pip3 install --prefix=/app vdf requests python-steamgriddb jsonschema
+  - name: deck-patcher
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 src/*.py /app/lib/deck-patcher/
+      - install -Dm644 src/qml/*.qml /app/lib/deck-patcher/qml/
+      - install -Dm644 data/*.desktop /app/share/applications/
+      - install -Dm644 data/*.xml /app/share/metainfo/
+      - install -Dm644 data/icons/*.svg /app/share/icons/hicolor/scalable/apps/
+      - install -Dm755 deck-patcher.sh /app/bin/deck-patcher
+    sources:
+      - type: dir
+        path: .

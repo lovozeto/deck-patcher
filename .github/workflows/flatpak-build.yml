@@ -1,0 +1,25 @@
+name: Build Flatpak
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          bundle: deck-patcher.flatpak
+          manifest-path: com.github.lovozeto.DeckPatcher.yml
+          cache-key: flatpak-builder-${{ github.sha }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: deck-patcher-flatpak
+          path: deck-patcher.flatpak
+      - name: Upload to release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: deck-patcher.flatpak
