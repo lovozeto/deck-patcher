@@ -38,9 +38,9 @@ def _launch_gui() -> int:
     """
     try:
         # TODO: replace with PySide6 / PyQt6 once the base app supports Qt 6
-        from PyQt5.QtCore import QUrl  # type: ignore[import-untyped]
-        from PyQt5.QtQml import QQmlApplicationEngine  # type: ignore[import-untyped]
-        from PyQt5.QtWidgets import QApplication  # type: ignore[import-untyped]
+        from PyQt5.QtCore import QUrl  # type: ignore[import-not-found]
+        from PyQt5.QtQml import QQmlApplicationEngine  # type: ignore[import-not-found]
+        from PyQt5.QtWidgets import QApplication  # type: ignore[import-not-found]
     except ImportError as exc:
         print(f"ERROR: Qt bindings not available: {exc}", file=sys.stderr)
         return 1
@@ -59,9 +59,9 @@ def _launch_gui() -> int:
 
     # Expose Python objects to QML
     ctx = qml_engine.rootContext()
-    ctx.setContextProperty("patcherEngine", engine_obj)  # type: ignore[arg-type]
-    ctx.setContextProperty("appliedPatches", get_applied_patches())  # type: ignore[arg-type]
-    ctx.setContextProperty("registryUrl", DEFAULT_REGISTRY_URL)  # type: ignore[arg-type]
+    ctx.setContextProperty("patcherEngine", engine_obj)
+    ctx.setContextProperty("appliedPatches", get_applied_patches())
+    ctx.setContextProperty("registryUrl", DEFAULT_REGISTRY_URL)
 
     qml_main = Path(__file__).parent / "qml" / "main.qml"
     qml_engine.load(QUrl.fromLocalFile(str(qml_main)))
@@ -70,7 +70,7 @@ def _launch_gui() -> int:
         print("ERROR: Failed to load main.qml", file=sys.stderr)
         return 1
 
-    return app.exec_()
+    return int(app.exec_())
 
 
 def main() -> int:

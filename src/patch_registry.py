@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-import requests  # type: ignore[import-untyped]
+import requests
 
 DEFAULT_REGISTRY_URL = (
     "https://raw.githubusercontent.com/lovozeto/deck-patches/main/index.json"

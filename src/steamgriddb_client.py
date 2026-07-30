@@ -6,7 +6,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-import requests  # type: ignore[import-untyped]
+from urllib.parse import quote
+
+import requests
 
 from steam_utils import get_steam_dir
 
@@ -64,7 +66,7 @@ class SteamGridDBClient:
 
     def search_game(self, query: str) -> list[SteamGridDBGame]:
         """Search SteamGridDB for games matching a query string."""
-        data = self._get(f"search/autocomplete/{requests.utils.quote(query)}")
+        data = self._get(f"search/autocomplete/{quote(query)}")
         results: list[SteamGridDBGame] = []
         for item in data.get("data", []):
             results.append(

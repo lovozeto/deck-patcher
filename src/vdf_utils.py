@@ -14,7 +14,7 @@ from steam_utils import get_steam_dir
 def read_text_vdf(path: Path) -> dict[str, Any]:
     """Read a text-mode VDF file and return its contents as a dict."""
     with open(path, encoding="utf-8") as f:
-        return dict(vdf.load(f))  # type: ignore[return-value]
+        return dict(vdf.load(f))
 
 
 def write_text_vdf(path: Path, data: dict[str, Any]) -> None:
@@ -28,7 +28,7 @@ def write_text_vdf(path: Path, data: dict[str, Any]) -> None:
 def read_binary_vdf(path: Path) -> dict[str, Any]:
     """Read a binary-mode VDF file (e.g. shortcuts.vdf) and return its contents."""
     with open(path, "rb") as f:
-        return dict(vdf.binary_load(f))  # type: ignore[return-value]
+        return dict(vdf.binary_load(f))
 
 
 def write_binary_vdf(path: Path, data: dict[str, Any]) -> None:
